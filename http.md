@@ -1,0 +1,1 @@
+HTTP es un protocolo basado en el modelo request/response y TCP. Cada mensaje está compuesto por un header con metadatos y un body con el contenido. Se utiliza para transferir datos entre cliente y servidor.

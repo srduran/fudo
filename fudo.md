@@ -1,0 +1,2 @@
+FUDO es una startup presente en Chile, Argentina, México, Colombia y Brasil. Ofrece un software para negocios relacionados al área de la gastronomía, es una solución integral donde tenemos pagos, control de stock, gestión de mesas, estadísticas, entre otros.
+Una de los focos principales en lo que están trabajando es en el pago, sobre todo en la terminal de pago que permite gestionar pedidos y cobros, buscando integrar todo el software de FUDO en la misma terminal.

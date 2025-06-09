@@ -1,0 +1,1 @@
+TCP es un protocolo de comunicación que se encarga que los paquetes lleguen completos y en orden, es decir, si algún paquete se pierde, se reenviará. Esto asegura confiabilidad aunque con mayor latencia respecto a UDP.
