@@ -25,6 +25,10 @@ class MainApp
       response['Cache-Control'] = 'public, max-age=86400'
       response.write(File.read('static/AUTHORS'))
       response['Content-Type'] = 'text/plain'
+    when ['/openapi', 'GET']
+      response['Cache-Control'] = 'no-store'
+      response.write(File.read('static/openapi.yaml'))
+      response['Content-Type'] = 'text/yaml'
     else
       response.status = 404
       response.write({ error: 'Not Found' }.to_json)
