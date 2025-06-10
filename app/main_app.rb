@@ -21,6 +21,10 @@ class MainApp
       @product_store.list(request, response)
     when ['/products', 'POST']
       @product_store.create(request, response)
+    when ['/authors', 'GET']
+      response['Cache-Control'] = 'public, max-age=86400'
+      response.write(File.read('static/AUTHORS'))
+      response['Content-Type'] = 'text/plain'
     else
       response.status = 404
       response.write({ error: 'Not Found' }.to_json)
