@@ -42,6 +42,17 @@ class Auth
     response.finish
   end
 
+  def get_user_data(request)
+    token = extract_token(request)
+    payload = decode_token(token)[0]
+
+    exp_time = Time.at(payload['exp']).utc
+    payload['exp_readable'] = exp_time.strftime("%B %d, %Y %H:%M UTC")
+    payload
+  rescue
+    nil
+  end
+
   def extract_token(request)
     auth_header = request.get_header('HTTP_AUTHORIZATION')
     return nil unless auth_header&.start_with?('Bearer ')

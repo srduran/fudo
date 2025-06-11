@@ -26,6 +26,13 @@ class MainApp
       response['Cache-Control'] = 'no-store'
       response.write(File.read('static/openapi.yaml'))
       response['Content-Type'] = 'text/yaml'
+    when ['/me', 'GET']
+      return @auth.unauthorized(response) unless @auth.authenticated?(request)
+      user_data = @auth.get_user_data(request)
+      response.write({ 
+        user: user_data['user'],
+        exp_readable: user_data['exp_readable']
+      }.to_json)
     else
       response.status = 404
       response.write({ error: 'Not Found' }.to_json)
