@@ -1,8 +1,3 @@
-require 'json'
-require_relative 'auth'
-require_relative 'product_store'
-require 'rack'
-
 class MainApp
   def initialize
     @auth = Auth.new
@@ -18,8 +13,10 @@ class MainApp
     when ['/login', 'POST']
       @auth.login(request, response)
     when ['/products', 'GET']
+      return @auth.unauthorized(response) unless @auth.authenticated?(request)
       @product_store.list(request, response)
     when ['/products', 'POST']
+      return @auth.unauthorized(response) unless @auth.authenticated?(request)
       @product_store.create(request, response)
     when ['/authors', 'GET']
       response['Cache-Control'] = 'public, max-age=86400'
