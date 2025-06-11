@@ -1,9 +1,17 @@
 class ProductStore
-  def list(request, response)
-    response.write({ message: 'Products listed' }.to_json)
+  def initialize
+    @products = []
+    @mutex = Mutex.new
   end
 
-  def create(request, response)
-    response.write({ message: 'Product created' }.to_json)
+  def add(name)
+    @mutex.synchronize do
+      @products << { id: @products.length + 1, name: name }
+    end
+  end
+
+  def list(response)
+    response.write({ products: @products }.to_json)
+    response.finish
   end
 end

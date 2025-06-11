@@ -2,6 +2,7 @@ class MainApp
   def initialize
     @auth = Auth.new
     @product_store = ProductStore.new
+    @worker = AsyncWorker.new(@product_store)
   end
 
   def call(env)
@@ -14,10 +15,10 @@ class MainApp
       @auth.login(request, response)
     when ['/products', 'GET']
       return @auth.unauthorized(response) unless @auth.authenticated?(request)
-      @product_store.list(request, response)
+      @product_store.list(response)
     when ['/products', 'POST']
       return @auth.unauthorized(response) unless @auth.authenticated?(request)
-      @product_store.create(request, response)
+      @worker.enqueue(request, response)
     when ['/authors', 'GET']
       response['Cache-Control'] = 'public, max-age=86400'
       response.write(File.read('static/AUTHORS'))

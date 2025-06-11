@@ -44,13 +44,14 @@ class Auth
 
   def get_user_data(request)
     token = extract_token(request)
-    payload = decode_token(token)[0]
-
-    exp_time = Time.at(payload['exp']).utc
-    payload['exp_readable'] = exp_time.strftime("%B %d, %Y %H:%M UTC")
-    payload
-  rescue
-    nil
+    begin
+      payload = decode_token(token)[0]
+      exp_time = Time.at(payload['exp']).utc
+      payload['exp_readable'] = exp_time.strftime("%B %d, %Y %H:%M UTC")
+      payload
+    rescue JWT::ExpiredSignature, JWT::DecodeError
+      nil
+    end
   end
 
   def extract_token(request)
@@ -65,12 +66,6 @@ class Auth
   end
 
   def decode_token(token)
-    begin
-      JWT.decode(token, JWT_SECRET, true, { algorithm: 'HS256' })
-    rescue JWT::ExpiredSignature
-      response.status = 401
-      response.write({ error: 'Token expired' }.to_json)
-      response.finish
-    end
+    JWT.decode(token, JWT_SECRET, true, { algorithm: 'HS256' })
   end
 end
