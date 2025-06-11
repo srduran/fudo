@@ -11,6 +11,8 @@ require_relative 'app/auth'
 require_relative 'app/product_store'
 require_relative 'app/async_worker'
 require_relative 'app/gzip_middleware'
+require_relative 'app/cors_middleware'
 
+use CorsMiddleware
 use GzipMiddleware
 run MainApp.new
