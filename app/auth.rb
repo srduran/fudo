@@ -2,27 +2,26 @@ class Auth
   USERS = {
     ENV['USER_ADMIN'] => ENV['PASS_ADMIN']
   }
-  JWT_SECRET = ENV['JWT_SECRET'] || 'secret_key'
+  JWT_SECRET = ENV['JWT_SECRET']
 
   def login(request, response)
     begin
-      body = JSON.parse(request.body.read)
+      params = JSON.parse(request.body.read)
     rescue JSON::ParserError
       response.status = 400
       response.write({ error: 'Invalid JSON' }.to_json)
       return response.finish
     end
+    user = params['user']
+    password = params['password'].to_s
 
-    if USERS[body['user']] == body['password'].to_s
-      token = encode_token(body['user'])
+    if USERS[user] == password
       response.status = 200
-      response['Content-Type'] = 'application/json'
-      response.write({ token: token }.to_json)
+      response.write({token: encode_token(user)}.to_json)
     else
       response.status = 401
-      response.write({ error: 'Invalid credentials' }.to_json)
+      response.write({error: 'wrong user or password'}.to_json)
     end
-    response.finish
   end
 
   def authenticated?(request)

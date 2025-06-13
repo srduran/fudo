@@ -5,14 +5,11 @@ class GzipMiddleware
 
   def call(env)
     status, headers, body = @app.call(env)
-    
-    content_type = headers['Content-Type'].to_s
-    accept_encoding = env['HTTP_ACCEPT_ENCODING'] 
+    encoding = headers['Accept-Encoding']
+    type = headers['Content-Type']
 
-    if accept_encoding&.include?('gzip') && content_type&.include?('application/json')
-      string_body = ''
-      body.each { |part| string_body << part }
-      compressed = gzip(string_body)
+    if encoding.include?('gzip') && type.include?('application/json')
+      compressed = gzip(body)
       headers['Content-Encoding'] = 'gzip'
       headers['Content-Length'] = compressed.bytesize.to_s
       headers['X-Compressed'] = 'true'
@@ -23,10 +20,10 @@ class GzipMiddleware
   end
 
   private
-  def gzip(string)
+  def gzip(body)
     output = StringIO.new
     zipped = Zlib::GzipWriter.new(output)
-    zipped.write(string)
+    body.each { |part| zipped.write(part) }
     zipped.close
     output.string
   end

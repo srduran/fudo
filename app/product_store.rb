@@ -11,7 +11,7 @@ class ProductStore
   end
 
   def list(response)
+    response.status = 200
     response.write({ products: @products }.to_json)
-    response.finish
   end
 end
